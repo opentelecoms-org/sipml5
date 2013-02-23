@@ -11,6 +11,11 @@ API_FOLDER_NAME=release
 API_FILE_NAME=SIPml-api.js
 API_FILE_PATH=$API_FOLDER_NAME/$API_FILE_NAME
 
+if [ -z "$YUI" ];
+then
+  YUI=`which yui-compressor` || YUI="java -jar yuicompressor-2.4.7.jar"
+fi
+
 # src dst
 CompressFile()
 {	
@@ -18,9 +23,9 @@ CompressFile()
 	if [ ${1: -3} == ".js" ]
 	then
 		# java -jar google-closure-compiler.jar --js $1 --js_output_file $2 --charset utf-8
-		java -jar yuicompressor-2.4.7.jar $1 -o $2 --charset utf-8
+		$YUI $1 -o $2 --charset utf-8
 	else
-		java -jar yuicompressor-2.4.7.jar $1 -o $2 --charset utf-8
+		$YUI $1 -o $2 --charset utf-8
 	fi
 }
 

@@ -1,8 +1,12 @@
-java \
--Djsdoc.dir=./jsdoc-toolkit \
--jar ./jsdoc-toolkit/jsrun.jar \
-./jsdoc-toolkit/app/run.js \
--t=./jsdoc-toolkit/templates/jsdoc \
+#!/bin/bash
+
+if [ -z "${JSDOC}" ];
+then
+  JSDOC=`which jsdoc` || \
+    JSDOC="java -Djsdoc.dir=./jsdoc-toolkit -jar ./jsdoc-toolkit/jsrun.jar ./jsdoc-toolkit/app/run.js -t=./jsdoc-toolkit/templates/jsdoc"
+fi
+
+$JSDOC \
 -r=4 \
 ./SIPml.js \
 -d=docgen \

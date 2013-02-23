@@ -12,7 +12,7 @@ PROJECT=sipml5
 
 if [ -z "$VERSION" ];
 then
-  VERSION=`date +%Y%m%d.%H%M`
+  VERSION=0.0.`date +%Y%m%d.%H%M`
 fi
 
 RELEASE_NAME=${PROJECT}-${VERSION}

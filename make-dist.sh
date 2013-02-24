@@ -35,6 +35,8 @@ cp -dpR \
   tests \
   ${RELEASE_NAME}/
 
+rm -rf ${RELEASE_NAME}/assets/js/google-code-prettify
+
 tar czf ${DIST_TGZ} ${RELEASE_NAME}
 rm -rf ${RELEASE_NAME}
 

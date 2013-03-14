@@ -185,8 +185,10 @@ var tsip_stack_param_type_e =
 	MODE_SERVER: 28,
 	PROXY_OUTBOUND: 30,
 	WEBSOCKET_SERVER_URL: 31,
-	ENABLE_RTCWEB_BREAKER: 32,
-    ENABLE_SECURE_TRANSPORT: 33,
+    ICE_SERVERS: 32,
+	ENABLE_RTCWEB_BREAKER: 33,
+    ENABLE_CLICK2CALL: 34,
+    ENABLE_SECURE_TRANSPORT: 35,
 	
 	/* === Security === */
 	EARLY_IMS : 40,
@@ -284,7 +286,9 @@ function tsip_stack(s_realm, s_impi, s_impu_uri, s_proxy_cscf_host, i_proxy_cscf
     this.network.i_proxy_outbound_port = 5060;
     this.network.e_proxy_outbound_type = this.network.e_proxy_cscf_type;
     this.network.s_websocket_server_url = null;
+    this.network.ao_ice_servers = null;
     this.network.b_rtcweb_enabled = false;
+    this.network.b_click2call_enabled = false;
 
     this.network.aor = {};
     this.network.aor.s_ip = null;
@@ -585,8 +589,17 @@ tsip_stack.prototype.SetWebsocketServerUrl = function (s_websocket_server_url) {
     return tsip_stack.prototype.SetAny(tsip_stack_param_type_e.WEBSOCKET_SERVER_URL, s_websocket_server_url);
 }
 
+// x_ice_server_urls : 'string' or 'array'
+tsip_stack.prototype.SetIceServers = function (x_ice_server_urls) {
+    return tsip_stack.prototype.SetAny(tsip_stack_param_type_e.ICE_SERVERS, x_ice_server_urls);
+}
+
 tsip_stack.prototype.SetRTCWebBreakerEnabled = function (b_enabled) {
     return tsip_stack.prototype.SetAny(tsip_stack_param_type_e.ENABLE_RTCWEB_BREAKER, b_enabled);
+}
+
+tsip_stack.prototype.SetClick2CallEnabled = function (b_enabled) {
+    return tsip_stack.prototype.SetAny(tsip_stack_param_type_e.ENABLE_CLICK2CALL, b_enabled);
 }
 
 tsip_stack.prototype.SetSecureTransportEnabled = function (b_enabled) {
@@ -668,9 +681,35 @@ tsip_stack.prototype.__set = function (ao_params) {
                     }
                     break;
                 }
+            case tsip_stack_param_type_e.ICE_SERVERS:
+                {
+                    if(!tsk_string_is_null_or_empty(o_curr.ao_values[0])){
+                        try{
+                            if (o_curr.ao_values[0] instanceof String || typeof o_curr.ao_values[0] == "string") {
+                                eval("this.network.ao_ice_servers = " + o_curr.ao_values[0] + ";");
+                            }
+                            else if(o_curr.ao_values[0] instanceof Array || typeof o_curr.ao_values[0] == "array"){
+                                this.network.ao_ice_servers = o_curr.ao_values[0];
+                            }
+                            else{
+                                tsk_utils_log_warn(o_curr.ao_values[0] + " not valid as ICE servers");
+                            }
+                        }
+                        catch(e){
+                            tsk_utils_log_error('Failed to set ICE servers:' + e);
+                        }
+                    }
+                    
+                    break;
+                }
             case tsip_stack_param_type_e.ENABLE_RTCWEB_BREAKER:
                 {
                     this.network.b_rtcweb_enabled = o_curr.ao_values[0];
+                    break;
+                }
+            case tsip_stack_param_type_e.ENABLE_CLICK2CALL:
+                {
+                    this.network.b_click2call_enabled = o_curr.ao_values[0];
                     break;
                 }
 
